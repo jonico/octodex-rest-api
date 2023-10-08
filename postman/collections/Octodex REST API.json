@@ -1,0 +1,228 @@
+{
+	"info": {
+		"_postman_id": "8d317175-51c2-4229-8130-76c6760c4075",
+		"name": "Octodex REST API",
+		"description": "<img src=\"https://content.pstmn.io/b40a2651-df53-44fa-a65f-5a3cfd662f22/aW1hZ2UucG5n\" alt=\"From%20Monalisa's%20coffee%20table%20book,%20you%20can%20conclude%20...\">\n\n<img src=\"https://content.pstmn.io/8643efb3-aeab-4641-be7c-3ee77cd52027/aW1hZ2UucG5n\" alt=\"...%20that%20Mona%20has%20many%20robot%20friends%20...\">\n\n... including [Postbot](https://blog.postman.com/introducing-postbot-postmans-new-ai-assistant/), Postman's AI based helper to visualize API responses and write test cases.\n\nThe Octocat ASCII-Art API call is part of the [popular GitHub REST API](https://docs.github.com/en/rest?apiVersion=2022-11-28), which belongs to one of the most viewed [dev workspaces](https://www.postman.com/api-evangelist/workspace/github) in the [Postman public API network](https://www.postman.com/explore).\n\n... unfortunately, there is no official REST API for the [Octodex ](https://octodex.github.com) \\- GitHub's home of Octocat illustrations and the place where superfans can find and share their favorite designs.\n\n<img src=\"https://content.pstmn.io/63ec8c3b-d13a-486a-9b6e-37ad7d0e0c0f/aW1hZ2UucG5n\" alt=\"...%20a%20great%20html%20page%20but%20how%20to%20access%20the%20octocats%20programatically?\" width=\"1067\" height=\"1230\">\n\nJSON is so much easier to work with than HTML, so why not create your own Octodex REST API that returns JSON? We have already created a Postman [API Mock Server](https://learning.postman.com/docs/designing-and-developing-your-api/mocking-data/setting-up-mock/) and copied all the tests and visualizations created by Postman in this request. Once you have created your real backend, just replace the value of the `baseUrl` collection variable with the URL of your own server and run the tests again.\n\nIf you are interested in how you can design your own APIs with Postman, version them in GitHub, include CI/CD and generate server boilerplate code, [check out Postman's documentation](https://learning.postman.com/docs/designing-and-developing-your-api/the-api-workflow/).\n\n<img src=\"https://content.pstmn.io/d110b0d9-a6df-41e3-9e2e-8adea1bee91a/aW1hZ2UucG5n\" alt=\"Best%20of%20luck%20&amp;%20lots%20of%20fun%20from%20Postman%20and%20Mona%20❤️\">",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_uid": "24483733-8d317175-51c2-4229-8130-76c6760c4075"
+	},
+	"item": [
+		{
+			"name": "Build your own Octodex API",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ba072bc5-0da0-416c-8df0-2174067b4457",
+						"exec": [
+							"var template = `",
+							"<style type=\"text/css\">",
+							"    .tftable {font-size:14px;color:#333333;width:100%;border-width: 1px;border-color: #87ceeb;border-collapse: collapse;}",
+							"    .tftable th {font-size:18px;background-color:#87ceeb;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;text-align:left;}",
+							"    .tftable tr {background-color:#ffffff;}",
+							"    .tftable td {font-size:14px;border-width: 1px;padding: 8px;border-style: solid;border-color: #87ceeb;}",
+							"    .tftable tr:hover {background-color:#e0ffff;}",
+							"</style>",
+							"",
+							"<table class=\"tftable\" border=\"1\">",
+							"    <tr>",
+							"        <th>Title</th>",
+							"        <th>Octocat</th>",
+							"        <th>Authors</th>",
+							"    </tr>",
+							"    ",
+							"    {{#each response.data}}",
+							"        <tr>",
+							"            <td>{{title}}</td>",
+							"            <td><img src=\"{{octocat}}\" alt=\"No Image Available\" height=\"100\" width=\"100\"></td>",
+							"            <td>{{authors}}</td>",
+							"        </tr>",
+							"    {{/each}}",
+							"</table>",
+							"`;",
+							"",
+							"function constructVisualizerPayload() {",
+							"    var res = pm.response.json();",
+							"    ",
+							"    var visualizerData = {",
+							"        data: res.data",
+							"    };",
+							"",
+							"    return {response: visualizerData};",
+							"}",
+							"",
+							"pm.visualizer.set(template, constructVisualizerPayload());",
+							"",
+							"pm.test(\"At least 100 octocats (excluding the 'Original' octocat) are returned within less than a second\", function () {",
+							"  var responseData = pm.response.json();",
+							"  var octocats = responseData.data.filter(function(item) {",
+							"    return item.octocat !== \"\" && item.title !== \"Original\";",
+							"  });",
+							"",
+							"  pm.expect(octocats.length).to.be.greaterThan(100, \"At least 100 octocats (excluding the 'Original' octocat) should be returned\");",
+							"",
+							"  pm.expect(pm.response.responseTime).to.be.below(1000, \"Response time should be less than a second\");",
+							"});",
+							"",
+							"pm.test(\"Each octocat (excluding the 'Original' octocat) has at least one author\", function() {",
+							"    var responseData = pm.response.json();",
+							"    var octocats = responseData.data.filter(function(item) {",
+							"        return item.title !== \"Original\";",
+							"    });",
+							"",
+							"    octocats.forEach(function(octocat) {",
+							"        pm.expect(octocat.authors.length).to.be.greaterThan(0, \"Octocat with title '\" + octocat.title + \"' should have at least one author\");",
+							"    });",
+							"});",
+							"",
+							"pm.test(\"Each author has created at least one octocat\", function() {",
+							"    var responseData = pm.response.json();",
+							"    var octocats = responseData.data.filter(function(item) {",
+							"        return item.title !== \"Original\";",
+							"    });",
+							"",
+							"    var authors = {};",
+							"    octocats.forEach(function(octocat) {",
+							"        octocat.authors.forEach(function(author) {",
+							"            if (!authors[author]) {",
+							"                authors[author] = 0;",
+							"            }",
+							"            authors[author]++;",
+							"        });",
+							"    });",
+							"",
+							"    var authorNames = Object.keys(authors);",
+							"    var minOctocats = Math.min(...authorNames.map(function(name) {",
+							"        return authors[name];",
+							"    }));",
+							"    var maxOctocats = Math.max(...authorNames.map(function(name) {",
+							"        return authors[name];",
+							"    }));",
+							"",
+							"    console.log(\"Authors with the fewest octocats:\", authorNames.filter(function(name) {",
+							"        return authors[name] === minOctocats;",
+							"    }));",
+							"    console.log(\"Authors with the most octocats:\", authorNames.filter(function(name) {",
+							"        return authors[name] === maxOctocats;",
+							"    }));",
+							"",
+							"    pm.expect(Object.values(authors).every(function(count) {",
+							"        return count > 0;",
+							"    })).to.be.true;",
+							"});",
+							"",
+							"var responseJSON = pm.response.json();",
+							"",
+							"// Create an object to store the pairings and their counts",
+							"var pairings = {};",
+							"",
+							"// Loop through the authors array in the response",
+							"responseJSON.data.forEach(function(item) {",
+							"    var authors = item.authors;",
+							"",
+							"    // Loop through each pair of authors and update the count in the pairings object",
+							"    for (var i = 0; i < authors.length - 1; i++) {",
+							"        for (var j = i + 1; j < authors.length; j++) {",
+							"            var pair = authors[i] + \" - \" + authors[j];",
+							"            if (pairings[pair]) {",
+							"                pairings[pair]++;",
+							"            } else {",
+							"                pairings[pair] = 1;",
+							"            }",
+							"        }",
+							"    }",
+							"});",
+							"",
+							"// Find the pair with the maximum count",
+							"var maxCount = 0;",
+							"var maxPair = \"\";",
+							"for (var pair in pairings) {",
+							"    if (pairings[pair] > maxCount) {",
+							"        maxCount = pairings[pair];",
+							"        maxPair = pair;",
+							"    }",
+							"}",
+							"",
+							"// Test to check if any pairings were found",
+							"pm.test(\"At least one pair of authors collaborated\", function() {",
+							"    pm.expect(Object.keys(pairings).length).to.be.greaterThan(0);",
+							"});",
+							"",
+							"// Test to check the pair with the maximum count",
+							"pm.test(\"The pair that collaborated the most is \" + maxPair, function() {",
+							"    pm.expect(pairings[maxPair]).to.equal(maxCount);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"id": "ff283c1c-6b3c-4ef3-8f26-43aedb0dc61e",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"url": {
+					"raw": "{{baseUrl}}/octocats",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"octocats"
+					]
+				},
+				"description": "Returns all illustrations of the octodex including their authors"
+			},
+			"response": [
+				{
+					"id": "27d8c4a2-5bc3-458a-9e53-b3fc13c2fbf8",
+					"name": "Octocats-JSON",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/octocats",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"octocats"
+							]
+						},
+						"description": "Returns all illustrations of the octodex including their authors"
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"cookie": [],
+					"body": "{\n  \"args\": {},\n  \"data\": [\n    {\n      \"authors\": [\n        \"johncreek\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/parentocats.png\",\n      \"title\": \"Parentocats\"\n    },\n    {\n      \"authors\": [\n        \"johncreek\",\n        \"leereilly\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/godotocat.png\",\n      \"title\": \"Godotocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronfoxly\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/NUX_Octodex.gif\",\n      \"title\": \"NUXtocat\"\n    },\n    {\n      \"authors\": [\n        \"johncreek\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/yogitocat.png\",\n      \"title\": \"Yogitocat\"\n    },\n    {\n      \"authors\": [\n        \"johncreek\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/mona-the-rivetertocat.png\",\n      \"title\": \"Mona the Rivetertocat\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/manufacturetocat.png\",\n      \"title\": \"Manufacturetocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronfoxly\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/OctoAsians_dex_Full.png\",\n      \"title\": \"OctoAsians\"\n    },\n    {\n      \"authors\": [\n        \"cameronfoxly\",\n        \"johncreek\",\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Octoqueer.png\",\n      \"title\": \"Octoqueer\"\n    },\n    {\n      \"authors\": [\n        \"chubbmo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Terracottocat_Single.png\",\n      \"title\": \"Terracottocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronfoxly\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Octogatos.png\",\n      \"title\": \"Octogatos\"\n    },\n    {\n      \"authors\": [\n        \"cameronfoxly\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Adacats.png\",\n      \"title\": \"Adacats\"\n    },\n    {\n      \"authors\": [\n        \"ceciliorz\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Fintechtocat.png\",\n      \"title\": \"Fintechtocat\"\n    },\n    {\n      \"authors\": [\n        \"johncreek\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Brennatocat.png\",\n      \"title\": \"Brennatocat\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/filmtocats.png\",\n      \"title\": \"Filmtocats\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Sentrytocat_octodex.jpg\",\n      \"title\": \"Sentrytocat\"\n    },\n    {\n      \"authors\": [\n        \"rubyjazzy\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/puddle_jumper_octodex.jpg\",\n      \"title\": \"Umbrellatocat\"\n    },\n    {\n      \"authors\": [\n        \"rubyjazzy\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/boxertocat_octodex.jpg\",\n      \"title\": \"Boxertocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/surftocat.png\",\n      \"title\": \"Surftocat\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/hula_loop_octodex03.gif\",\n      \"title\": \"Hulatocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronfoxly\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/scubatocat.png\",\n      \"title\": \"Scubatocat\"\n    },\n    {\n      \"authors\": [\n        \"suziejurado\",\n        \"johncreek\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/vinyltocat.png\",\n      \"title\": \"Vinyltocat\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\",\n        \"johncreek\",\n        \"cameronfoxly\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/tentocats.jpg\",\n      \"title\": \"Tentocats\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/snowtocat_final.jpg\",\n      \"title\": \"Snowtocat\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/justicetocat.jpg\",\n      \"title\": \"Justicetocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronfoxly\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/blacktocats.png\",\n      \"title\": \"Blacktocats\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/saint_nictocat.jpg\",\n      \"title\": \"Saint Nictocat\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/mona-lovelace.jpg\",\n      \"title\": \"Mona Lovelace\"\n    },\n    {\n      \"authors\": [\n        \"kimestoesta\",\n        \"heyhayhay\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/dinotocat.png\",\n      \"title\": \"Dinotocat\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\",\n        \"johncreek\",\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/bannekat.png\",\n      \"title\": \"Benjamin Bannekat\"\n    },\n    {\n      \"authors\": [\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/catstello.png\",\n      \"title\": \"Catstello\"\n    },\n    {\n      \"authors\": [\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/mcefeeline.jpg\",\n      \"title\": \"McEfeeline\"\n    },\n    {\n      \"authors\": [\n        \"suziejurado\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/skatetocat.png\",\n      \"title\": \"Skatetocat\"\n    },\n    {\n      \"authors\": [\n        \"heyhayhay\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/bewitchedtocat.jpg\",\n      \"title\": \"Bewitchedtocat\"\n    },\n    {\n      \"authors\": [\n        \"rubyjazzy\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/inflatocat.png\",\n      \"title\": \"Inflatocat\"\n    },\n    {\n      \"authors\": [\n        \"jglovier\",\n        \"JohnCreek\",\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/welcometocat.png\",\n      \"title\": \"Welcometocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/filmtocat.png\",\n      \"title\": \"Filmtocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/privateinvestocat.jpg\",\n      \"title\": \"Private Investocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/gracehoppertocat.jpg\",\n      \"title\": \"Gracehoppertocat\"\n    },\n    {\n      \"authors\": [\n        \"JohnCreek\",\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/gobbleotron.gif\",\n      \"title\": \"Gobble-o-tron\"\n    },\n    {\n      \"authors\": [\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/jetpacktocat.png\",\n      \"title\": \"Jetpacktocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/minertocat.png\",\n      \"title\": \"Minertocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/saketocat.png\",\n      \"title\": \"Saketocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\",\n        \"JohnCreek\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/luchadortocat.png\",\n      \"title\": \"Luchadortocat\"\n    },\n    {\n      \"authors\": [\n        \"JohnCreek\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/saritocat.png\",\n      \"title\": \"Saritocat\"\n    },\n    {\n      \"authors\": [\n        \"leereilly\",\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/topguntocat.png\",\n      \"title\": \"Topguntocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/carlostocat.gif\",\n      \"title\": \"Carlostocat\"\n    },\n    {\n      \"authors\": [\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/grinchtocat.gif\",\n      \"title\": \"Grinchtocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/maxtocat.gif\",\n      \"title\": \"Maxtocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/yaktocat.png\",\n      \"title\": \"Yaktocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/steroidtocat.png\",\n      \"title\": \"Steroidtocat\"\n    },\n    {\n      \"authors\": [\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/mummytocat.gif\",\n      \"title\": \"Mummytocat\"\n    },\n    {\n      \"authors\": [\n        \"JohnCreek\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/labtocat.png\",\n      \"title\": \"Labtocat\"\n    },\n    {\n      \"authors\": [\n        \"JohnCreek\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/dunetocat.png\",\n      \"title\": \"Dunetocat\"\n    },\n    {\n      \"authors\": [\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/octoliberty.png\",\n      \"title\": \"OctoLiberty\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/femalecodertocat.png\",\n      \"title\": \"Femalecodertocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/daftpunktocat-thomas.gif\",\n      \"title\": \"Daftpunktocat-Thomas\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/daftpunktocat-guy.gif\",\n      \"title\": \"Daftpunktocat-Guy\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/foundingfather_v2.png\",\n      \"title\": \"Founding Father v2\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/poptocat_v2.png\",\n      \"title\": \"Poptocat v2\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Mardigrastocat.png\",\n      \"title\": \"Mardigrastocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/kimonotocat.png\",\n      \"title\": \"Kimonotocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Professortocat_v2.png\",\n      \"title\": \"professortocat_v2\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/goretocat.png\",\n      \"title\": \"goretocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/Robotocat.png\",\n      \"title\": \"Robotocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/motherhubbertocat.png\",\n      \"title\": \"Motherhubbertocat\"\n    },\n    {\n      \"authors\": [\n        \"jonrohan\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/skitchtocat.png\",\n      \"title\": \"Skitchtocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/gangnamtocat.png\",\n      \"title\": \"Gangnamtocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/droctocat.png\",\n      \"title\": \"Dr.Octocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/spidertocat.png\",\n      \"title\": \"Spidertocat\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/megacat-2.png\",\n      \"title\": \"Megacat v2\"\n    },\n    {\n      \"authors\": [\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/dodgetocat_v2.png\",\n      \"title\": \"Dodgetocat v2\"\n    },\n    {\n      \"authors\": [\n        \"jeejkang\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/stormtroopocat.png\",\n      \"title\": \"Stormtroopocat\"\n    },\n    {\n      \"authors\": [\n        \"billyroh\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/pusheencat.png\",\n      \"title\": \"Pusheencat\"\n    },\n    {\n      \"authors\": [\n        \"mattgraham\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/deckfailcat.png\",\n      \"title\": \"Deckfailcat\"\n    },\n    {\n      \"authors\": [\n        \"billyroh\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/murakamicat.png\",\n      \"title\": \"Murakamicat\"\n    },\n    {\n      \"authors\": [\n        \"nickh\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/homercat.png\",\n      \"title\": \"Homercat\"\n    },\n    {\n      \"authors\": [\n        \"nickh\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/minion.png\",\n      \"title\": \"Minion\"\n    },\n    {\n      \"authors\": [\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/droidtocat.png\",\n      \"title\": \"Droidtocat\"\n    },\n    {\n      \"authors\": [\n        \"nickh\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/octofez.png\",\n      \"title\": \"Octofez\"\n    },\n    {\n      \"authors\": [\n        \"jonrohan\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/heisencat.png\",\n      \"title\": \"Heisencat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/red-polo.png\",\n      \"title\": \"Red Polo\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/twenty-percent-cooler-octocat.png\",\n      \"title\": \"20% Cooler Octocat\"\n    },\n    {\n      \"authors\": [\n        \"tonyjaramillo\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/momtocat.png\",\n      \"title\": \"Momtocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/snowoctocat.png\",\n      \"title\": \"Snow Octocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/electrocat.png\",\n      \"title\": \"Electrocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/codercat.jpg\",\n      \"title\": \"Codercat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/strongbadtocat.png\",\n      \"title\": \"Strongbadtocat\"\n    },\n    {\n      \"authors\": [\n        \"jonrohan\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/adventure-cat.png\",\n      \"title\": \"Adventure Cat\"\n    },\n    {\n      \"authors\": [\n        \"jonrohan\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/doctocat-brown.jpg\",\n      \"title\": \"Doctocat Brown\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/dojocat.jpg\",\n      \"title\": \"Dojocat\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/defunktocat.png\",\n      \"title\": \"Defunktocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/herme-t-crabb.png\",\n      \"title\": \"Nemesis\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/saint-nicktocat.jpg\",\n      \"title\": \"Saint Nicktocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/orderedlistocat.png\",\n      \"title\": \"Ordered Listocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/thanktocat.png\",\n      \"title\": \"Thanktocat\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/megacat.jpg\",\n      \"title\": \"Megacat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/linktocat.jpg\",\n      \"title\": \"Linktocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/plumber.jpg\",\n      \"title\": \"Plumber\"\n    },\n    {\n      \"authors\": [\n        \"broccolini\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/octotron.jpg\",\n      \"title\": \"Octotron\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/baracktocat.jpg\",\n      \"title\": \"Baracktocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/octocat-de-los-muertos.jpg\",\n      \"title\": \"Octocat De Los Muertos\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/grim-repo.jpg\",\n      \"title\": \"Grim Repo\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/father_timeout.jpg\",\n      \"title\": \"Father Timeout\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/waldocat.png\",\n      \"title\": \"Where's Waldocat\"\n    },\n    {\n      \"authors\": [\n        \"jina\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/hipster-partycat.jpg\",\n      \"title\": \"Hipster Partycat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/riddlocat.png\",\n      \"title\": \"Riddlocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/visionary.jpg\",\n      \"title\": \"Visionary\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/oktobercat.png\",\n      \"title\": \"Oktobercat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/shoptocat.png\",\n      \"title\": \"Shoptocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/nyantocat.gif\",\n      \"title\": \"Nyantocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/octdrey-catburn.jpg\",\n      \"title\": \"Octdrey Catburn\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/spectrocat.png\",\n      \"title\": \"Spectrocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/bear-cavalry.png\",\n      \"title\": \"Bear Cavalry\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/andycat.jpg\",\n      \"title\": \"Andycat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/notocat.jpg\",\n      \"title\": \"Not Octocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/dodgetocat.jpg\",\n      \"title\": \"Dodge, Duck, Dip, Dive, Dodgetocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/cloud.jpg\",\n      \"title\": \"Cloud\"\n    },\n    {\n      \"authors\": [\n        \"jordanmccullough\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/scarletteocat.jpg\",\n      \"title\": \"Scarletteocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/poptocat.png\",\n      \"title\": \"Poptocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/jenktocat.jpg\",\n      \"title\": \"Jenktocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/xtocat.jpg\",\n      \"title\": \"X-tocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/chellocat.jpg\",\n      \"title\": \"Chellocat\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/cherryontop-o-cat.png\",\n      \"title\": \"Cherryontop-o-cat\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/supportcat.png\",\n      \"title\": \"Supportcat\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/collabocats.jpg\",\n      \"title\": \"Collabocats\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/constructocat2.jpg\",\n      \"title\": \"Constructocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/total-eclipse-of-the-octocat.jpg\",\n      \"title\": \"Total Eclipse of the Octocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/pacman-ghosts.jpg\",\n      \"title\": \"Blinktocat, Pinktocat, Inktocat, and Clyde\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/okal-eltocat.jpg\",\n      \"title\": \"Okal-Eltocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/octoclark-kentocat.jpg\",\n      \"title\": \"Octoclark Kentocat\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/agendacat.png\",\n      \"title\": \"Agendacat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/ironcat.jpg\",\n      \"title\": \"IronCat\"\n    },\n    {\n      \"authors\": [\n        \"jasoncostello\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/inspectocat.jpg\",\n      \"title\": \"Inspectocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/jean-luc-picat.jpg\",\n      \"title\": \"Jean-Luc Picat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/spocktocat.png\",\n      \"title\": \"Spocktocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/wilson.jpg\",\n      \"title\": \"Wilson\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/swagtocat.png\",\n      \"title\": \"Swagtocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/hubot.jpg\",\n      \"title\": \"Hubot\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/monroe.jpg\",\n      \"title\": \"Monroe\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/trekkie.png\",\n      \"title\": \"Trekkie\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/octonaut.jpg\",\n      \"title\": \"Octonaut\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/bouncercat.png\",\n      \"title\": \"Bouncer\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/founding-father.jpg\",\n      \"title\": \"Founding Father\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/pythocat.png\",\n      \"title\": \"Pythocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/drupalcat.jpg\",\n      \"title\": \"Drupalcat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/socialite.jpg\",\n      \"title\": \"Socialite\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/setuptocat.jpg\",\n      \"title\": \"Setuptocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/repo.png\",\n      \"title\": \"Repo\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/forktocat.jpg\",\n      \"title\": \"Forktocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/benevocats.png\",\n      \"title\": \"Benevocats\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/scottocat.jpg\",\n      \"title\": \"Scottocat\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/puppeteer.png\",\n      \"title\": \"Puppeteer\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/octobiwan.jpg\",\n      \"title\": \"Octobi Wan Catnobi\"\n    },\n    {\n      \"authors\": [\n        \"cameronmcefee\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/class-act.png\",\n      \"title\": \"Class Act\"\n    },\n    {\n      \"authors\": [\n        \"simonoxley\"\n      ],\n      \"octocat\": \"https://octodex.github.com/images/original.png\",\n      \"title\": \"Original\"\n    }\n  ]\n}"
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"id": "e0c7a3be-639b-43e4-bb75-fb334714d8dd",
+			"key": "baseUrl",
+			"value": "https://3195b4fb-27c8-4722-a947-eae239ec86f4.mock.pstmn.io"
+		}
+	]
+}
