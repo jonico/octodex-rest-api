@@ -14,6 +14,7 @@ jobs:
         run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
       - name: Run API tests
         run: |
+          postman collection run "${{ github.workspace }}/postman/collections/GitHub Octodex & Postbot.json" --integration-id "149913-${{ github.run_id }}"
           postman collection run "${{ github.workspace }}/postman/collections/Octodex REST API.json" --integration-id "149913-${{ github.run_id }}"
           # Lint your API using Postman CLI
           postman api lint 012ac499-eafb-489b-af7e-66a2d01896d6 --integration-id 149913
