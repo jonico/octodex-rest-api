@@ -1,6 +1,6 @@
 # Octodex REST API
 
-[![Automated API tests using Postman CLI](https://github.com/jonico/octodex-rest-api/actions/workflows/postman.yml/badge.svg)](https://github.com/jonico/octodex-rest-api/actions/workflows/postman.yml)
+[![Automated Governance tests using Postman CLI](https://github.com/jonico/octodex-rest-api/actions/workflows/postman-governance.yml/badge.svg)](https://github.com/jonico/octodex-rest-api/actions/workflows/postman-governance.yml)
 
 There is no official REST API for the [Octodex ](https://octodex.github.com) \- GitHub's home of Octocat illustrations and the place where superfans can find and share their favorite designs.
 <img src="https://content.pstmn.io/63ec8c3b-d13a-486a-9b6e-37ad7d0e0c0f/aW1hZ2UucG5n" alt="...%20a%20great%20html%20page%20but%20how%20to%20access%20the%20octocats%20programatically?" width="1067" height="1230">
