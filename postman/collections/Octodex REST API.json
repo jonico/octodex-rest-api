@@ -222,7 +222,7 @@
 		{
 			"listen": "prerequest",
 			"script": {
-				"id": "2440ec1b-1942-467a-b472-5dfa24eff25c",
+				"id": "22e256ff-5f98-46cd-b856-4ff409dc26cd",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -232,7 +232,7 @@
 		{
 			"listen": "test",
 			"script": {
-				"id": "23bf6bce-5579-4de9-a1f5-05eac59954bb",
+				"id": "f78e015d-9989-47e9-b7a3-abbb36707ad9",
 				"type": "text/javascript",
 				"exec": [
 					""
@@ -242,9 +242,9 @@
 	],
 	"variable": [
 		{
-			"id": "b01fd637-cadb-470f-a08a-b27809ea09ef",
+			"id": "0eb1c312-0c4c-4520-98cc-047174d2ad2d",
 			"key": "baseUrl",
-			"value": "https://octodex-rest-api-ccc20c6c9fbf.herokuapp.com/"
+			"value": "https://octodex-rest-api-ccc20c6c9fbf.herokuapp.com"
 		}
 	]
 }
