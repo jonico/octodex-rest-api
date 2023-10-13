@@ -1117,6 +1117,7 @@ module.exports = {
           },
           {
             "authors": [
+              "Simon Oxley"
             ],
             "octocat": "https://octodex.github.com/images/original.png",
             "title": "Original"
