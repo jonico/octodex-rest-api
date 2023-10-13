@@ -1,0 +1,30 @@
+name: Automated Governance tests using Postman CLI
+
+on: [push]
+jobs:
+  automated-governance-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+      - name: Check API for security and compliance
+        run: |
+          postman api lint 012ac499-eafb-489b-af7e-66a2d01896d6 --integration-id 149913
+      # if branch is main, wait for prod environment to be ready
+      - name: Wait for prod env to be ready
+        if: github.ref == 'refs/heads/main'
+        uses: jonico/wait-for-deployment-action@v3
+        id: deployment
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          environment: octodex-rest-api
+          timeout: 60
+          interval: 3
+      - name: Run API tests on prod
+        if: github.ref == 'refs/heads/main'
+        run: |
+          postman collection run "${{ github.workspace }}/postman/collections/Octodex REST API.json" --integration-id "149913-${{ github.run_id }}"
