@@ -26,4 +26,4 @@ jobs:
       
       - name: Run API tests on preview
         run: |
-          postman collection run "${{ github.workspace }}/postman/collections/Octodex REST API.json" --integration-id "149913-${{ github.run_id }} --env-var "baseUrl=https://octodex-rest-api-pr-${{ github.event.pull_request.number }}.herokuapp.com"
+          postman collection run "${{ github.workspace }}/postman/collections/Octodex REST API.json" --integration-id "149913-${{ github.run_id }}" --env-var "baseUrl=https://octodex-rest-api-pr-${{ github.event.pull_request.number }}.herokuapp.com"
